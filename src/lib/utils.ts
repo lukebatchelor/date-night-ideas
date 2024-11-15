@@ -11,14 +11,19 @@ export function cn(...inputs: ClassValue[]) {
 export function getChartData(
   actions: Record<string, WellnessAction[]>
 ): ChartData[] {
-  return Object.entries(WELLNESS_AREAS).map(([key, area]) => ({
-    name: key,
-    progress: Math.min(
-      ((actions[key]?.length || 0) / area.dailyGoal) * 100,
-      100
-    ),
-    fill: area.color,
+  const unnormalisedData = Object.entries(WELLNESS_AREAS)
+    .map(([key, area]) => ({
+      name: key,
+      progress: ((actions[key]?.length || 0) / area.dailyGoal) * 100,
+      fill: area.color,
+    }))
+  const maxProgress = unnormalisedData.reduce((cur, next, arr) => Math.max(cur, next.progress), 0);
+  const normalisedData = unnormalisedData.map(({progress,...rest}) => ({
+    ...rest,
+    progress,
+    normalisedProgress: progress * maxProgress / 100,
   }));
+  return normalisedData;
 }
 
 export function loadTodayActions(): Record<string, WellnessAction[]> {

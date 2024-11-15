@@ -49,10 +49,11 @@ export const WellnessTracker = () => {
     setCustomActions(updatedCustomActions);
     handleAddAction(area, action, "");
   };
+  console.log({data: getChartData(actions)})
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg">
+    <div className="min-h-screen bg-background p-4">
+      <div className="max-w-md mx-auto bg-card rounded-xl shadow-lg">
         <ChartCard actions={actions} chartData={getChartData(actions)} />
 
         <div className="flex justify-center p-4">
