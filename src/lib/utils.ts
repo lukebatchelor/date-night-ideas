@@ -11,10 +11,13 @@ export function cn(...inputs: ClassValue[]) {
 export function getChartData(
   actions: Record<string, WellnessAction[]>
 ): ChartData[] {
+  const savedGoals = localStorage.getItem('wellnessGoals');
+  const goals = savedGoals ? JSON.parse(savedGoals) : null;
+
   const unnormalisedData = Object.entries(WELLNESS_AREAS)
     .map(([key, area]) => ({
       name: key,
-      progress: ((actions[key]?.length || 0) / area.dailyGoal) * 100,
+      progress: ((actions[key]?.length || 0) / (goals?.[key] || area.dailyGoal)) * 100,
       fill: area.color,
     }))
   const maxProgress = unnormalisedData.reduce((cur, next) => Math.max(cur, next.progress), 0);

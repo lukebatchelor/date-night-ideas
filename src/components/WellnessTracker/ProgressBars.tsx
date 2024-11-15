@@ -1,12 +1,33 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WELLNESS_AREAS } from "@/lib/constants";
 import { WellnessAction } from "@/lib/types";
+import { useState, useEffect } from "react";
 
 interface ProgressBarsProps {
   actions: Record<string, WellnessAction[]>;
 }
 
 const ProgressBars = ({ actions }: ProgressBarsProps) => {
+  const [goals, setGoals] = useState(() => {
+    const saved = localStorage.getItem('wellnessGoals');
+    return saved ? JSON.parse(saved) : Object.entries(WELLNESS_AREAS).reduce((acc, [key, area]) => ({
+      ...acc,
+      [key]: area.dailyGoal
+    }), {});
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('wellnessGoals');
+      if (saved) {
+        setGoals(JSON.parse(saved));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   return (
     <Card>
       <CardHeader className="items-center pb-2">
@@ -14,7 +35,7 @@ const ProgressBars = ({ actions }: ProgressBarsProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {Object.entries(WELLNESS_AREAS).map(([key, area]) => {
-          const progress = ((actions[key]?.length || 0) / area.dailyGoal) * 100;
+          const progress = ((actions[key]?.length || 0) / goals[key]) * 100;
           const Icon = area.icon;
           
           return (
@@ -25,7 +46,7 @@ const ProgressBars = ({ actions }: ProgressBarsProps) => {
                   <span className="font-medium">{area.label}</span>
                 </div>
                 <span className="text-muted-foreground">
-                  {actions[key]?.length || 0} / {area.dailyGoal}
+                  {actions[key]?.length || 0} / {goals[key]}
                 </span>
               </div>
               <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
