@@ -39,8 +39,35 @@ export const AddActionDialog = ({
   const [area, setArea] = useState<string | null>(selectedArea);
   const [selectedAction, setSelectedAction] = useState<string>("");
 
+  const handleSave = () => {
+    if (area && selectedAction) {
+      onAddAction(area, selectedAction, comment);
+      setComment("");
+      setSelectedAction("");
+      setArea(null);
+      onOpenChange(false);
+    }
+  };
+
+  const handleCustomActionAdd = () => {
+    if (area && newAction.trim()) {
+      onAddCustomAction(area, newAction);
+      setNewAction("");
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        if (!open) {
+          setComment("");
+          setSelectedAction("");
+          setArea(null);
+        }
+        onOpenChange(open);
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Record Wellness Activity</DialogTitle>
@@ -88,10 +115,7 @@ export const AddActionDialog = ({
               disabled={!area}
             />
             <Button
-              onClick={() => {
-                onAddCustomAction(area!, newAction);
-                setNewAction("");
-              }}
+              onClick={handleCustomActionAdd}
               disabled={!area || !newAction.trim()}
             >
               Add
@@ -115,13 +139,7 @@ export const AddActionDialog = ({
 
           <Button 
             className="w-full"
-            onClick={() => {
-              if (area && selectedAction) {
-                onAddAction(area, selectedAction, comment);
-                setComment("");
-                setSelectedAction("");
-              }
-            }}
+            onClick={handleSave}
             disabled={!area || !selectedAction}
           >
             Save Activity

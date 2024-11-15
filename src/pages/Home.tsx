@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState, useEffect } from "react";
+import Confetti from "react-confetti";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ChartCard } from "@/components/ChartCard";
@@ -17,11 +18,34 @@ export const HomePage = ({
   onAddAction: (area: string, action: string, comment: string) => void;
   onAddCustomAction: (area: string, action: string) => void;
 }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedArea, setSelectedArea] = React.useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [goals] = useState(() => {
+    const saved = localStorage.getItem('wellnessGoals');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  const handleAddAction = (area: string, action: string, comment: string) => {
+    onAddAction(area, action, comment);
+    const newCount = (actions[area]?.length || 0) + 1;
+    if (newCount >= (goals[area] || 0)) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
+    }
+  };
 
   return (
     <div className="space-y-6 pb-24">
+      {showConfetti && (
+        <Confetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={false}
+          numberOfPieces={200}
+        />
+      )}
+      
       <ChartCard actions={actions} chartData={getChartData(actions)} />
       
       <div className="flex justify-center">
@@ -42,7 +66,7 @@ export const HomePage = ({
         onOpenChange={setIsOpen}
         selectedArea={selectedArea}
         customActions={customActions}
-        onAddAction={onAddAction}
+        onAddAction={handleAddAction}
         onAddCustomAction={onAddCustomAction}
       />
     </div>
