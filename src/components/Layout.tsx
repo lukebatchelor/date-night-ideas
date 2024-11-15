@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BarChart, Settings } from 'lucide-react';
+import { ScrollText, Settings, Home } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Topbar from "@/components/Topbar";
 
@@ -19,7 +19,16 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               className="w-full"
               data-active={location.pathname === '/'}
             >
-              <BarChart className="w-5 h-5" />
+              <Home className="w-5 h-5" />
+            </Button>
+          </Link>
+          <Link to="/daily" className="flex-1">
+            <Button 
+              variant="ghost" 
+              className="w-full"
+              data-active={location.pathname === '/daily'}
+            >
+              <ScrollText className="w-5 h-5" />
             </Button>
           </Link>
           <Link to="/settings" className="flex-1">

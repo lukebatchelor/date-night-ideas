@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import { HomePage } from "@/pages/Home";
 import { SettingsPage } from "@/pages/Settings";
+import { DailyLogPage } from "@/pages/DailyLog";
 import { WellnessAction } from "@/lib/types";
 import { loadTodayActions, loadCustomActions, saveActions, saveCustomActions } from "@/lib/utils";
 
@@ -17,21 +18,26 @@ export default function App() {
 
   const handleAddAction = (area: string, action: string, comment: string) => {
     const currentTime = new Date().toLocaleTimeString();
+    const today = new Date().toDateString();
     const newActions = {
       ...actions,
       [area]: [...(actions[area] || []), { action, time: currentTime, comment }],
     };
-    saveActions(newActions);
+    localStorage.setItem(today, JSON.stringify(newActions));
     setActions(newActions);
   };
 
-  const handleDeleteAction = (area: string, index: number) => {
+  const handleDeleteAction = (area: string, index: number, dateString?: string) => {
+    const date = dateString || new Date().toDateString();
+    const currentActions = JSON.parse(localStorage.getItem(date) || '{}');
     const newActions = {
-      ...actions,
-      [area]: actions[area].filter((_, i) => i !== index)
+      ...currentActions,
+      [area]: currentActions[area].filter((_: any, i: number) => i !== index)
     };
-    saveActions(newActions);
-    setActions(newActions);
+    localStorage.setItem(date, JSON.stringify(newActions));
+    if (date === new Date().toDateString()) {
+      setActions(newActions);
+    }
   };
 
   const handleAddCustomAction = (area: string, action: string) => {
@@ -64,7 +70,14 @@ export default function App() {
                 actions={actions}
                 customActions={customActions}
                 onAddAction={handleAddAction}
-                onAddCustomAction={handleAddCustomAction}
+              />
+            } 
+          />
+          <Route 
+            path="/daily" 
+            element={
+              <DailyLogPage
+                actions={actions}
                 onDeleteAction={handleDeleteAction}
               />
             } 
@@ -83,4 +96,4 @@ export default function App() {
       </Layout>
     </BrowserRouter>
   );
-}
+};
