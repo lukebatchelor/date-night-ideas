@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WELLNESS_AREAS } from "@/lib/constants";
 import { WellnessAction } from "@/lib/types";

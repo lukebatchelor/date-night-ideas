@@ -17,7 +17,7 @@ export function getChartData(
       progress: ((actions[key]?.length || 0) / area.dailyGoal) * 100,
       fill: area.color,
     }))
-  const maxProgress = unnormalisedData.reduce((cur, next, arr) => Math.max(cur, next.progress), 0);
+  const maxProgress = unnormalisedData.reduce((cur, next) => Math.max(cur, next.progress), 0);
   const normalisedData = unnormalisedData.map(({progress,...rest}) => ({
     ...rest,
     progress,
