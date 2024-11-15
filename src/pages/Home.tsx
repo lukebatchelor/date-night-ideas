@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ChartCard } from "@/components/ChartCard";
 import { AddActionDialog } from "@/components/AddActionDialog";
+import { DailyLog } from "@/components/DailyLog";
 import { getChartData } from "@/lib/utils";
 import { WellnessAction } from "@/lib/types";
 
@@ -12,11 +13,13 @@ export const HomePage = ({
   customActions,
   onAddAction,
   onAddCustomAction,
+  onDeleteAction,
 }: {
   actions: Record<string, WellnessAction[]>;
   customActions: Record<string, string[]>;
   onAddAction: (area: string, action: string, comment: string) => void;
   onAddCustomAction: (area: string, action: string) => void;
+  onDeleteAction: (area: string, index: number) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
@@ -60,6 +63,8 @@ export const HomePage = ({
           Add Action
         </Button>
       </div>
+
+      <DailyLog actions={actions} onDeleteAction={onDeleteAction} />
 
       <AddActionDialog
         isOpen={isOpen}

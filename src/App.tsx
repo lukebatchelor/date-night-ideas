@@ -6,7 +6,7 @@ import { SettingsPage } from "@/pages/Settings";
 import { WellnessAction } from "@/lib/types";
 import { loadTodayActions, loadCustomActions, saveActions, saveCustomActions } from "@/lib/utils";
 
-function App() {
+export default function App() {
   const [actions, setActions] = useState<Record<string, WellnessAction[]>>({});
   const [customActions, setCustomActions] = useState<Record<string, string[]>>({});
 
@@ -20,6 +20,15 @@ function App() {
     const newActions = {
       ...actions,
       [area]: [...(actions[area] || []), { action, time: currentTime, comment }],
+    };
+    saveActions(newActions);
+    setActions(newActions);
+  };
+
+  const handleDeleteAction = (area: string, index: number) => {
+    const newActions = {
+      ...actions,
+      [area]: actions[area].filter((_, i) => i !== index)
     };
     saveActions(newActions);
     setActions(newActions);
@@ -48,6 +57,7 @@ function App() {
                 customActions={customActions}
                 onAddAction={handleAddAction}
                 onAddCustomAction={handleAddCustomAction}
+                onDeleteAction={handleDeleteAction}
               />
             } 
           />
@@ -60,5 +70,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
