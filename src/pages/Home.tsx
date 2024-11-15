@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Confetti from "react-confetti";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -72,7 +72,6 @@ export const HomePage = ({
         selectedArea={selectedArea}
         customActions={customActions}
         onAddAction={handleAddAction}
-        onAddCustomAction={onAddCustomAction}
       />
     </div>
   );

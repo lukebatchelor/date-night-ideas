@@ -42,7 +42,15 @@ export default function App() {
     };
     saveCustomActions(updatedCustomActions);
     setCustomActions(updatedCustomActions);
-    handleAddAction(area, action, "");
+  };
+
+  const handleDeleteCustomAction = (area: string, index: number) => {
+    const updatedCustomActions = {
+      ...customActions,
+      [area]: customActions[area].filter((_, i) => i !== index)
+    };
+    saveCustomActions(updatedCustomActions);
+    setCustomActions(updatedCustomActions);
   };
 
   return (
@@ -63,7 +71,13 @@ export default function App() {
           />
           <Route 
             path="/settings" 
-            element={<SettingsPage customActions={customActions} />} 
+            element={
+              <SettingsPage 
+                customActions={customActions}
+                onAddCustomAction={handleAddCustomAction}
+                onDeleteCustomAction={handleDeleteCustomAction}
+              />
+            } 
           />
         </Routes>
       </Layout>

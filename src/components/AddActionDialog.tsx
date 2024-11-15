@@ -23,7 +23,6 @@ interface AddActionDialogProps {
   selectedArea: string | null;
   customActions: Record<string, string[]>;
   onAddAction: (area: string, action: string, comment: string) => void;
-  onAddCustomAction: (area: string, action: string) => void;
 }
 
 export const AddActionDialog = ({
@@ -32,9 +31,7 @@ export const AddActionDialog = ({
   selectedArea,
   customActions,
   onAddAction,
-  onAddCustomAction,
 }: AddActionDialogProps) => {
-  const [newAction, setNewAction] = useState("");
   const [comment, setComment] = useState("");
   const [area, setArea] = useState<string | null>(selectedArea);
   const [selectedAction, setSelectedAction] = useState<string>("");
@@ -46,13 +43,6 @@ export const AddActionDialog = ({
       setSelectedAction("");
       setArea(null);
       onOpenChange(false);
-    }
-  };
-
-  const handleCustomActionAdd = () => {
-    if (area && newAction.trim()) {
-      onAddCustomAction(area, newAction);
-      setNewAction("");
     }
   };
 
@@ -106,21 +96,6 @@ export const AddActionDialog = ({
               ))}
             </SelectContent>
           </Select>
-
-          <div className="flex gap-2">
-            <Input
-              placeholder="New action"
-              value={newAction}
-              onChange={(e) => setNewAction(e.target.value)}
-              disabled={!area}
-            />
-            <Button
-              onClick={handleCustomActionAdd}
-              disabled={!area || !newAction.trim()}
-            >
-              Add
-            </Button>
-          </div>
 
           <Input
             type="time"

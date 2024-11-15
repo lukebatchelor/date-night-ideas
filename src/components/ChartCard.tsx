@@ -1,5 +1,5 @@
 import { WellnessAction } from "@/lib/types";
-import ProgressBars from "./WellnessTracker/ProgressBars";
+import ProgressBars from "./ProgressBars";
 
 interface ChartCardProps {
   actions: Record<string, WellnessAction[]>;

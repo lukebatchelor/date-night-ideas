@@ -17,6 +17,14 @@ export const DailyLog = ({ actions, onDeleteAction }: DailyLogProps) => {
     return saved ? JSON.parse(saved) : {};
   });
 
+  // Helper function to parse time string into Date object
+  const parseTime = (timeStr: string) => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
   // Process actions while tracking counts
   const allActions = Object.entries(actions).flatMap(([area, areaActions]) => {
     const targetGoal = goals[area] || WELLNESS_AREAS[area].dailyGoal;
@@ -34,7 +42,11 @@ export const DailyLog = ({ actions, onDeleteAction }: DailyLogProps) => {
       });
     }
     return actionsWithCounts;
-  }).sort((b, a) => new Date(b.time).getTime() - new Date(a.time).getTime());
+  }).sort((b, a) => {
+    const timeA = parseTime(a.time);
+    const timeB = parseTime(b.time);
+    return timeA.getTime() - timeB.getTime();
+  });
 
   if (allActions.length === 0) {
     return null;
@@ -48,11 +60,7 @@ export const DailyLog = ({ actions, onDeleteAction }: DailyLogProps) => {
       <CardContent className="space-y-4">
         {allActions.map((action) => {
           const Icon = action.areaDetails.icon;
-          const formattedTime = new Date(`2000-01-01 ${action.time}`).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          });
+          const formattedTime = action.time;
           const hasMetGoal = action.currentCount >= action.targetGoal;
           
           return (
