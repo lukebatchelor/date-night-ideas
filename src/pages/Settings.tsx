@@ -4,12 +4,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { WELLNESS_AREAS } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
-import { Plus, X, Check, Trash2 } from "lucide-react";
+import { Plus, X, Check, Trash2, Download } from "lucide-react";
+import { formatDateKey, loadDailyLogs } from '@/lib/dateUtils';
 
 interface CustomActionEditorProps {
   area: string;
   onSave: (action: string) => void;
   onCancel: () => void;
+}
+
+interface ExportData {
+    goals: string | null;
+    customActions: string | null;
+    dailyLogs: {
+        [key: string]: any
+    };
 }
 
 const CustomActionEditor: React.FC<CustomActionEditorProps> = ({ area, onSave, onCancel }) => {
@@ -70,6 +79,24 @@ export const SettingsPage = ({
   const handleAddCustomAction = (area: string, action: string) => {
     onAddCustomAction(area, action);
     setEditingArea(null);
+  };
+
+  const handleExportData = () => {
+    const exportData = {
+      goals: JSON.parse(localStorage.getItem('wellnessGoals') || '{}'),
+      customActions: JSON.parse(localStorage.getItem('customActions') || '{}'),
+      dailyLogs: loadDailyLogs() // This will get sorted logs
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `wellness-data-${formatDateKey(new Date())}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -145,6 +172,18 @@ export const SettingsPage = ({
               </ul>
             </div>
           ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Export Data</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={handleExportData} className="w-full">
+            <Download className="w-4 h-4 mr-2" />
+            Download data as JSON
+          </Button>
         </CardContent>
       </Card>
 

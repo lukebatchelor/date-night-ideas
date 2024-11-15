@@ -1,8 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-
 import { WellnessAction, ChartData } from "./types";
 import { WELLNESS_AREAS } from "./constants";
+import { formatDateKey, loadDailyLogs } from "./dateUtils";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -30,9 +30,9 @@ export function getChartData(
 }
 
 export function loadTodayActions(): Record<string, WellnessAction[]> {
-  const today = new Date().toDateString();
-  const savedActions = localStorage.getItem(today);
-  return savedActions ? JSON.parse(savedActions) : {};
+  const today = formatDateKey(new Date());
+  const logs = loadDailyLogs();
+  return logs[today] || {};
 }
 
 export function loadCustomActions(): Record<string, string[]> {
@@ -41,8 +41,10 @@ export function loadCustomActions(): Record<string, string[]> {
 }
 
 export function saveActions(actions: Record<string, WellnessAction[]>): void {
-  const today = new Date().toDateString();
-  localStorage.setItem(today, JSON.stringify(actions));
+  const today = formatDateKey(new Date());
+  const logs = loadDailyLogs();
+  logs[today] = actions;
+  localStorage.setItem('dailyLogs', JSON.stringify(logs));
 }
 
 export function saveCustomActions(

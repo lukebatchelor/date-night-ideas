@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, ClipboardList } from 'lucide-react';
 import { WellnessAction } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { formatDateKey } from '@/lib/dateUtils';
 
 interface DailyLogPageProps {
   actions: Record<string, WellnessAction[]>;
@@ -16,7 +17,7 @@ export const DailyLogPage = ({ actions, onDeleteAction }: DailyLogPageProps) => 
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const formatDate = (date: Date) => {
+  const formatDisplayDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -31,9 +32,10 @@ export const DailyLogPage = ({ actions, onDeleteAction }: DailyLogPageProps) => 
   };
 
   const getActionsForDate = () => {
-    const dateString = selectedDate.toDateString();
-    const savedActions = localStorage.getItem(dateString);
-    return savedActions ? JSON.parse(savedActions) : {};
+    const dateString = formatDateKey(selectedDate);
+    const savedLogs = localStorage.getItem('dailyLogs');
+    const logs = savedLogs ? JSON.parse(savedLogs) : {};
+    return logs[dateString] || {};
   };
 
   const dateActions = getActionsForDate();
@@ -53,12 +55,12 @@ export const DailyLogPage = ({ actions, onDeleteAction }: DailyLogPageProps) => 
         
         <div className="relative w-48">
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-lg font-medium">{formatDate(selectedDate)}</span>
+            <span className="text-lg font-medium">{formatDisplayDate(selectedDate)}</span>
           </div>
           <Input
             ref={inputRef}
             type="date"
-            value={selectedDate.toISOString().split('T')[0]}
+            value={formatDateKey(selectedDate)}
             onChange={(e) => setSelectedDate(new Date(e.target.value))}
             className={cn(
               "appearance-none bg-transparent border-none text-center font-medium text-lg hover:bg-accent cursor-pointer opacity-0",
