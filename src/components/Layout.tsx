@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ScrollText, Settings, Home } from 'lucide-react';
+import { Calendar, Lightbulb } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Topbar from "@/components/Topbar";
 
@@ -10,34 +10,27 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
       <Topbar />
-      <main className="p-4 max-w-md mx-auto">{children}</main>
+      <main className="p-4 max-w-md mx-auto pb-24">{children}</main>
       <nav className="fixed bottom-0 left-0 right-0 border-t bg-background">
         <div className="flex justify-around p-2 max-w-md mx-auto">
-          <Link to="/" className="flex-1">
+          <Link to="/ideas" className="flex-1">
             <Button 
               variant="ghost" 
               className="w-full"
-              data-active={location.pathname === '/'}
+              data-active={location.pathname === '/ideas'}
             >
-              <Home className="w-5 h-5" />
+              <Lightbulb className="w-5 h-5" />
+              <span className="sr-only">Date Ideas</span>
             </Button>
           </Link>
-          <Link to="/daily" className="flex-1">
+          <Link to="/calendar" className="flex-1">
             <Button 
               variant="ghost" 
               className="w-full"
-              data-active={location.pathname === '/daily'}
+              data-active={location.pathname === '/calendar'}
             >
-              <ScrollText className="w-5 h-5" />
-            </Button>
-          </Link>
-          <Link to="/settings" className="flex-1">
-            <Button 
-              variant="ghost" 
-              className="w-full"
-              data-active={location.pathname === '/settings'}
-            >
-              <Settings className="w-5 h-5" />
+              <Calendar className="w-5 h-5" />
+              <span className="sr-only">Calendar</span>
             </Button>
           </Link>
         </div>

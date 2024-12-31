@@ -1,0 +1,36 @@
+{
+    "dateNights": [
+      {
+        "weekNumber": 0,
+        "letter": "A",
+        "status": "completed",
+        "dateIdea": "Art Gallery of WA evening visit",
+        "plannedDate": "2024-12-28",
+        "dateCompleted": "2024-12-28"
+      },
+      {
+        "weekNumber": 1,
+        "letter": "B",
+        "status": "completed",
+        "dateIdea": "Board game café visit",
+        "plannedDate": "2025-01-04",
+        "dateCompleted": "2025-01-04"
+      },
+      {
+        "weekNumber": 2,
+        "letter": "C",
+        "status": "planned",
+        "dateIdea": "Cook a new cuisine together",
+        "plannedDate": "2025-01-11"
+      },
+      {
+        "weekNumber": 3,
+        "status": "skipped"
+      },
+      {
+        "weekNumber": 4,
+        "letter": "D",
+        "status": "pending"
+      }
+    ]
+  }

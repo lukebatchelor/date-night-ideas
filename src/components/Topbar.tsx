@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun, Moon, Activity } from 'lucide-react';
+import { Sun, Moon, Wine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Topbar = () => {
@@ -18,8 +18,8 @@ const Topbar = () => {
   return (
     <div className="flex items-center justify-between p-4 border-b bg-background">
       <div className="flex items-center gap-2">
-        <Activity className="w-6 h-6 text-primary" />
-        <span className="text-xl font-semibold text-primary">Wellness</span>
+        <Wine className="w-6 h-6 text-primary" />
+        <span className="text-xl font-semibold text-primary">Date Night</span>
       </div>
       <Button
         variant="outline"
