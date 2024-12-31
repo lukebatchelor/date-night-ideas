@@ -1,3 +1,4 @@
+// src/pages/DateIdeas.tsx
 import React, { useState, useEffect } from 'react';
 import { Plus, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,19 +8,7 @@ import {
   CardFooter 
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-
-type DateIdea = {
-  id?: string;
-  text: string;
-  letter: string;
-  votes?: number;
-  comments?: number;
-  hasVoted?: boolean;
-};
-
-type DateIdeasByLetter = {
-  [key: string]: string[];
-};
+import { api, type DateIdeasByLetter } from '@/lib/api';
 
 export const DateIdeasPage = () => {
   const [dateIdeas, setDateIdeas] = useState<DateIdeasByLetter>({});
@@ -30,12 +19,8 @@ export const DateIdeasPage = () => {
   useEffect(() => {
     const loadDateIdeas = async () => {
       try {
-        const response = await fetch('/date-ideas.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch date ideas');
-        }
-        const data = await response.json();
-        setDateIdeas(data.dateIdeas);
+        const data = await api.getDateIdeas();
+        setDateIdeas(data);
         setLoading(false);
       } catch (err) {
         setError('Failed to load date ideas');
@@ -58,6 +43,21 @@ export const DateIdeasPage = () => {
     }
   };
 
+  const handleVote = async (letter: string, ideaIndex: number, voteType: 'up' | 'down') => {
+    // TODO: Implement voting functionality
+    console.log('Vote:', { letter, ideaIndex, voteType });
+  };
+
+  const handleComment = async (letter: string, ideaIndex: number) => {
+    // TODO: Implement comment functionality
+    console.log('Comment:', { letter, ideaIndex });
+  };
+
+  const handleAddIdea = () => {
+    // TODO: Implement add idea functionality
+    console.log('Add idea clicked');
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center h-64">Loading...</div>;
   }
@@ -70,7 +70,7 @@ export const DateIdeasPage = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Date Ideas</h1>
-        <Button size="sm">
+        <Button size="sm" onClick={handleAddIdea}>
           <Plus className="w-4 h-4 mr-2" />
           Add Idea
         </Button>
@@ -102,18 +102,33 @@ export const DateIdeasPage = () => {
               {letter}
             </h2>
             <div className="grid gap-3">
-              {ideas.map((idea) => (
-                <Card key={idea}>
+              {ideas.map((idea, index) => (
+                <Card key={`${letter}-${index}`}>
                   <div className="flex items-center justify-between p-3">
                     <p className="text-sm">{idea}</p>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleVote(letter, index, 'up')}
+                      >
                         <ThumbsUp className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleVote(letter, index, 'down')}
+                      >
                         <ThumbsDown className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleComment(letter, index)}
+                      >
                         <MessageSquare className="w-4 h-4" />
                       </Button>
                     </div>

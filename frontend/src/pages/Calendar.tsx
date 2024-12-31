@@ -1,18 +1,13 @@
-// pages/Calendar.tsx
+// src/pages/Calendar.tsx
 import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, addWeeks, addDays } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { api, type DateNight } from '@/lib/api';
 
-type DateNightStatus = {
-  weekNumber: number;
-  letter?: string;
-  status: 'pending' | 'planned' | 'completed' | 'skipped';
-  dateIdea?: string;
-  plannedDate?: string;
-  dateCompleted?: string;
+type DateNightWithRange = DateNight & {
   dateRange?: {
     start: Date;
     end: Date;
@@ -20,8 +15,8 @@ type DateNightStatus = {
 };
 
 export const CalendarPage = () => {
-  const [dateNights, setDateNights] = useState<DateNightStatus[]>([]);
-  const [weeks, setWeeks] = useState<DateNightStatus[]>([]);
+  const [dateNights, setDateNights] = useState<DateNightWithRange[]>([]);
+  const [weeks, setWeeks] = useState<DateNightWithRange[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +30,7 @@ export const CalendarPage = () => {
   // Generate all weeks when dateNights data changes
   useEffect(() => {
     const startDate = new Date('2024-12-23'); // Week 0
-    const generatedWeeks: DateNightStatus[] = [];
+    const generatedWeeks: DateNightWithRange[] = [];
 
     for (let weekNumber = 0; weekNumber < 53; weekNumber++) {
       const weekStart = startOfWeek(addWeeks(startDate, weekNumber), { weekStartsOn: 1 });
@@ -60,7 +55,7 @@ export const CalendarPage = () => {
       generatedWeeks.push({
         weekNumber,
         letter: nextLetter,
-        status: 'pending' as const,
+        status: 'pending',
         dateRange: { start: weekStart, end: weekEnd }
       });
     }
@@ -72,12 +67,8 @@ export const CalendarPage = () => {
   useEffect(() => {
     const loadDateNights = async () => {
       try {
-        const response = await fetch('/date-nights.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch date nights');
-        }
-        const data = await response.json();
-        setDateNights(data.dateNights);
+        const data = await api.getDateNights();
+        setDateNights(data);
         setLoading(false);
       } catch (err) {
         setError('Failed to load date nights');
@@ -88,7 +79,7 @@ export const CalendarPage = () => {
     loadDateNights();
   }, []);
 
-  const getStatusBadge = (status: DateNightStatus['status']) => {
+  const getStatusBadge = (status: DateNight['status']) => {
     const variants = {
       completed: 'default',
       planned: 'secondary',
