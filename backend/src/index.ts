@@ -10,7 +10,7 @@ const DIST_PATH = '../frontend/dist';
 
 const app = new Elysia()
   .use(cors())
-  // API Routes
+  // API Routes first
   .get("/api/date-nights", () => {
     try {
       return Bun.file("data/date-nights.json").json();
@@ -28,16 +28,28 @@ const app = new Elysia()
     }
   });
 
-// In production, serve static files if the dist directory exists
+// In production, handle static files and SPA routing
 if (!isDev && existsSync(DIST_PATH)) {
   console.log('📦 Serving static files from:', DIST_PATH);
-  app.use(staticPlugin({
-    assets: DIST_PATH,
-    prefix: '/'
-  }));
   
-  // Handle SPA routing
-  app.get("*", () => Bun.file(`${DIST_PATH}/index.html`));
+  // Serve specific static files and assets
+  app.get('/assets/*', ({ request }) => {
+    const filePath = request.url.split('/assets/')[1];
+    return Bun.file(`${DIST_PATH}/assets/${filePath}`);
+  });
+  
+  // Serve other static files from the root
+  app.get('/vite.svg', () => Bun.file(`${DIST_PATH}/vite.svg`));
+  app.get('/favicon.ico', () => Bun.file(`${DIST_PATH}/favicon.ico`));
+  
+  // SPA catch-all - must come last
+  app.get('*', ({ headers }) => {
+    // Don't serve index.html for API routes
+    if (headers.accept?.includes('application/json')) {
+      return new Response('Not Found', { status: 404 });
+    }
+    return Bun.file(`${DIST_PATH}/index.html`);
+  });
 } else if (!isDev) {
   console.log('⚠️  No static files found. Running in API-only mode.');
 }

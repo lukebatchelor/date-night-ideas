@@ -4,17 +4,16 @@
         "weekNumber": 0,
         "letter": "A",
         "status": "completed",
-        "dateIdea": "Art Gallery of WA evening visit",
+        "dateIdea": "Art! Paint and Sip @ Pinot and Picasso",
         "plannedDate": "2024-12-28",
         "dateCompleted": "2024-12-28"
       },
       {
         "weekNumber": 1,
         "letter": "B",
-        "status": "completed",
-        "dateIdea": "Board game café visit",
-        "plannedDate": "2025-01-04",
-        "dateCompleted": "2025-01-04"
+        "status": "planned",
+        "dateIdea": "Beach Pilates",
+        "plannedDate": "2025-01-05"
       },
       {
         "weekNumber": 2,
